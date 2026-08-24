@@ -71,6 +71,7 @@ function defaultProgress() {
     history: [],
     unlocked: { outfit: ["red"], headband: ["red"], hair: ["black"], weapon: ["none"], cape: ["none"] },
     equipped: { skin: "medium", outfit: "red", headband: "red", hair: "black", weapon: "none", cape: "none" },
+    enabledUnits: null, // null = all lessons in play; otherwise an array of enabled unit names
   };
 }
 
@@ -80,7 +81,7 @@ const WORDS = [
   { id: "w2", unit: "Lesson 1", hanzi: "鱼", pinyin: "yú", meaning: "fish", example: "我喜欢吃鱼。", exampleMeaning: "I like eating fish." },
   { id: "w3", unit: "Lesson 1", hanzi: "雨", pinyin: "yǔ", meaning: "rain", example: "外面在下雨。", exampleMeaning: "It's raining outside." },
   { id: "w4", unit: "Lesson 1", hanzi: "一", pinyin: "yī", meaning: "one", example: "我有一本书。", exampleMeaning: "I have one book." },
-  { id: "w5", unit: "Lesson 1", hanzi: "二", pinyin: "èr", meaning: "two", example: "我有二个苹果。", exampleMeaning: "I have two apples." },
+  { id: "w5", unit: "Lesson 1", hanzi: "二", pinyin: "èr", meaning: "two", example: "我排第二。", exampleMeaning: "I am second in line." },
   { id: "w6", unit: "Lesson 1", hanzi: "五", pinyin: "wǔ", meaning: "five", example: "我五岁了。", exampleMeaning: "I am five years old." },
   { id: "w7", unit: "Lesson 1", hanzi: "耳", pinyin: "ěr", meaning: "ear", example: "我的耳朵很大。", exampleMeaning: "My ears are big." },
   { id: "w8", unit: "Lesson 1", hanzi: "牙", pinyin: "yá", meaning: "tooth", example: "我要刷牙。", exampleMeaning: "I need to brush my teeth." },
@@ -126,7 +127,7 @@ const WORDS = [
   { id: "w46", unit: "Lesson 3", hanzi: "吗", pinyin: "ma", meaning: "(question word)", example: "你好吗？", exampleMeaning: "How are you?" },
   { id: "w47", unit: "Lesson 3", hanzi: "去", pinyin: "qù", meaning: "to go", example: "我要去学校。", exampleMeaning: "I want to go to school." },
   // 第四课 Lesson 4
-  { id: "w48", unit: "Lesson 4", hanzi: "日", pinyin: "rì", meaning: "sun / day", example: "今天是晴天。", exampleMeaning: "Today is sunny." },
+  { id: "w48", unit: "Lesson 4", hanzi: "日", pinyin: "rì", meaning: "sun / day", example: "今天是星期日。", exampleMeaning: "Today is Sunday." },
   { id: "w49", unit: "Lesson 4", hanzi: "石", pinyin: "shí", meaning: "stone", example: "这是一块石头。", exampleMeaning: "This is a stone." },
   { id: "w50", unit: "Lesson 4", hanzi: "子", pinyin: "zǐ", meaning: "child / son", example: "这是我的儿子。", exampleMeaning: "This is my son." },
   { id: "w51", unit: "Lesson 4", hanzi: "字", pinyin: "zì", meaning: "character / word", example: "这是一个汉字。", exampleMeaning: "This is a Chinese character." },
@@ -197,7 +198,7 @@ const WORDS = [
   { id: "w113", unit: "Lesson 7", hanzi: "朵", pinyin: "duǒ", meaning: "(measure word, flowers)", example: "一朵花。", exampleMeaning: "One flower." },
   { id: "w114", unit: "Lesson 7", hanzi: "两", pinyin: "liǎng", meaning: "two", example: "我有两只猫。", exampleMeaning: "I have two cats." },
   // 第八课 Lesson 8
-  { id: "w115", unit: "Lesson 8", hanzi: "目", pinyin: "mù", meaning: "eye", example: "请闭上眼睛。", exampleMeaning: "Please close your eyes." },
+  { id: "w115", unit: "Lesson 8", hanzi: "目", pinyin: "mù", meaning: "eye", example: "这是一道题目。", exampleMeaning: "This is a question." },
   { id: "w116", unit: "Lesson 8", hanzi: "舌", pinyin: "shé", meaning: "tongue", example: "伸出舌头。", exampleMeaning: "Stick out your tongue." },
   { id: "w117", unit: "Lesson 8", hanzi: "手", pinyin: "shǒu", meaning: "hand", example: "举起手来。", exampleMeaning: "Raise your hand." },
   { id: "w118", unit: "Lesson 8", hanzi: "足", pinyin: "zú", meaning: "foot (in 足球)", example: "一只足球。", exampleMeaning: "A football." },
@@ -275,7 +276,7 @@ const WORDS = [
   { id: "w187", unit: "Lesson 11", hanzi: "友", pinyin: "yǒu", meaning: "friend (in 朋友)", example: "朋友很重要。", exampleMeaning: "Friends are important." },
   { id: "w188", unit: "Lesson 11", hanzi: "坐", pinyin: "zuò", meaning: "to sit", example: "请坐下。", exampleMeaning: "Please sit down." },
   { id: "w189", unit: "Lesson 11", hanzi: "高", pinyin: "gāo", meaning: "tall", example: "他很高。", exampleMeaning: "He is tall." },
-  { id: "w190", unit: "Lesson 11", hanzi: "发", pinyin: "fā", meaning: "hair (in 头发)", example: "我的头发很长。", exampleMeaning: "My hair is long." },
+  { id: "w190", unit: "Lesson 11", hanzi: "发", pinyin: "fà", meaning: "hair (in 头发)", example: "我的头发很长。", exampleMeaning: "My hair is long." },
   { id: "w191", unit: "Lesson 11", hanzi: "直", pinyin: "zhí", meaning: "straight", example: "这条路很直。", exampleMeaning: "This road is straight." },
   { id: "w192", unit: "Lesson 11", hanzi: "起", pinyin: "qǐ", meaning: "to rise", example: "早上起床。", exampleMeaning: "Get up in the morning." },
   { id: "w193", unit: "Lesson 11", hanzi: "回", pinyin: "huí", meaning: "to return", example: "我要回家了。", exampleMeaning: "I'm going home." },
@@ -347,6 +348,10 @@ const WORDS = [
   { id: "w256", unit: "Lesson 14", hanzi: "做", pinyin: "zuò", meaning: "to do", example: "我在做功课。", exampleMeaning: "I am doing homework." },
 ];
 
+const ALL_UNITS = [...new Set(WORDS.map((w) => w.unit))];
+function isWordEnabled(word, enabledUnits) {
+  return !enabledUnits || enabledUnits.length === 0 || enabledUnits.includes(word.unit);
+}
 
 const INTERVALS = [0, 1, 2, 4, 7, 14];
 
@@ -726,6 +731,10 @@ export default function App() {
     loadProgress(code);
   }
 
+  function handleUpdateEnabledUnits(units) {
+    saveProgress({ ...progress, enabledUnits: units });
+  }
+
   async function handleReset() {
     if (!confirmReset) { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 3000); return; }
     try {
@@ -748,10 +757,11 @@ export default function App() {
   function buildSession() {
     const today = todayStr();
     const words = progress.words || {};
-    const review = WORDS.filter((w) => words[w.id] && words[w.id].dueDate <= today)
+    const pool = WORDS.filter((w) => isWordEnabled(w, progress.enabledUnits));
+    const review = pool.filter((w) => words[w.id] && words[w.id].dueDate <= today)
       .sort((a, b) => (words[a.id].dueDate < words[b.id].dueDate ? -1 : 1))
       .slice(0, 8);
-    const fresh = WORDS.filter((w) => !words[w.id]).slice(0, 5);
+    const fresh = pool.filter((w) => !words[w.id]).slice(0, 5);
     const gamePool = shuffle([...review, ...fresh]).slice(0, 6);
     const gameType = shuffle(["match", "listening", "speed"])[0];
     return { review, fresh, gamePool, gameType };
@@ -893,7 +903,15 @@ export default function App() {
   }
 
   if (screen === "parent") {
-    return <ParentView progress={progress} familyCode={familyCode} onBack={() => setScreen("home")} />;
+    return (
+      <ParentView
+        progress={progress}
+        familyCode={familyCode}
+        onBack={() => setScreen("home")}
+        onChangeFamilyCode={handleFamilyCodeSubmit}
+        onUpdateEnabledUnits={handleUpdateEnabledUnits}
+      />
+    );
   }
 
   if (screen === "boss") {
@@ -1295,7 +1313,7 @@ function ParentGate({ onBack, onSuccess }) {
   );
 }
 
-function ParentView({ progress, familyCode, onBack }) {
+function ParentView({ progress, familyCode, onBack, onChangeFamilyCode, onUpdateEnabledUnits }) {
   const masteredCount = masteredCountOf(progress);
   const learnedCount = Object.keys(progress.words || {}).length;
   const history = progress.history || [];
@@ -1305,6 +1323,29 @@ function ParentView({ progress, familyCode, onBack }) {
   const totalCorrect = history.reduce((s, h) => s + h.correct, 0);
   const accuracy = totalReviewed > 0 ? Math.round((totalCorrect / totalReviewed) * 100) : null;
   const bossWinsCount = Object.keys(progress.bossHistory || {}).length;
+  const [editingCode, setEditingCode] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const effectiveEnabled = progress.enabledUnits && progress.enabledUnits.length > 0 ? progress.enabledUnits : ALL_UNITS;
+
+  function toggleUnit(unit) {
+    const isOn = effectiveEnabled.includes(unit);
+    let next;
+    if (isOn) {
+      next = effectiveEnabled.filter((u) => u !== unit);
+      if (next.length === 0) return; // always keep at least one chapter active
+    } else {
+      next = [...effectiveEnabled, unit];
+    }
+    onUpdateEnabledUnits(next.length === ALL_UNITS.length ? null : next);
+  }
+
+  function saveCode() {
+    const code = codeInput.trim();
+    if (code.length >= 4) {
+      onChangeFamilyCode(code);
+      setEditingCode(false);
+    }
+  }
 
   return (
     <div style={{ background: TOKENS.bg, ...DOT_BG, minHeight: "100vh" }} className="p-4 md:p-10">
@@ -1319,16 +1360,51 @@ function ParentView({ progress, familyCode, onBack }) {
         </div>
 
         {familyCode && (
-          <div style={{ backgroundColor: TOKENS.spirit }} className="rounded-2xl p-4 mb-6 flex items-center justify-between">
-            <div>
-              <p style={{ color: TOKENS.spiritLight }} className="text-xs font-semibold">
-                Family Code — enter this on your phone to sync
-              </p>
-              <p style={{ color: "#fff" }} className="text-2xl font-extrabold tracking-widest">
-                {familyCode}
-              </p>
+          <div style={{ backgroundColor: TOKENS.spirit }} className="rounded-2xl p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p style={{ color: TOKENS.spiritLight }} className="text-xs font-semibold">
+                  Family Code — enter this on your phone to sync
+                </p>
+                <p style={{ color: "#fff" }} className="text-2xl font-extrabold tracking-widest">
+                  {familyCode}
+                </p>
+              </div>
+              {editingCode ? (
+                <Users size={28} color="#fff" />
+              ) : (
+                <button
+                  onClick={() => { setCodeInput(""); setEditingCode(true); }}
+                  style={{ color: "#fff" }}
+                  className="text-xs font-semibold underline underline-offset-2 opacity-90"
+                >
+                  Change
+                </button>
+              )}
             </div>
-            <Users size={28} color="#fff" />
+            {editingCode && (
+              <>
+                <div className="mt-3 flex items-center gap-2">
+                  <input
+                    value={codeInput}
+                    onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                    maxLength={8}
+                    placeholder="e.g. K7P2XQ"
+                    style={{ color: TOKENS.ink }}
+                    className="flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white outline-none"
+                  />
+                  <button onClick={saveCode} style={{ backgroundColor: TOKENS.gold, color: TOKENS.ink }} className="rounded-xl px-4 py-2 text-sm font-bold">
+                    Save
+                  </button>
+                  <button onClick={() => setEditingCode(false)} style={{ color: TOKENS.spiritLight }} className="text-sm font-semibold">
+                    Cancel
+                  </button>
+                </div>
+                <p style={{ color: TOKENS.spiritLight }} className="text-xs mt-2 opacity-90">
+                  Switches this device to a different code — an existing code syncs with it, a new one starts fresh.
+                </p>
+              </>
+            )}
           </div>
         )}
 
@@ -1354,6 +1430,35 @@ function ParentView({ progress, familyCode, onBack }) {
             <span className="text-xl">🏆</span>
             <p style={{ color: TOKENS.ink }} className="text-xl font-extrabold">{bossWinsCount}</p>
             <p style={{ color: TOKENS.inkSoft }} className="text-xs">Boss medals</p>
+          </div>
+        </div>
+
+        <div style={{ backgroundColor: TOKENS.card }} className="rounded-3xl p-5 shadow-md mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 style={{ color: TOKENS.ink }} className="font-bold">Practice chapters</h3>
+            {progress.enabledUnits && (
+              <button onClick={() => onUpdateEnabledUnits(null)} style={{ color: TOKENS.spirit }} className="text-xs font-semibold underline underline-offset-2">
+                Select all
+              </button>
+            )}
+          </div>
+          <p style={{ color: TOKENS.inkSoft }} className="text-xs mb-3">
+            Choose which lessons new words and reviews are drawn from — handy for focusing on chapters before a school test.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {ALL_UNITS.map((unit) => {
+              const active = effectiveEnabled.includes(unit);
+              return (
+                <button
+                  key={unit}
+                  onClick={() => toggleUnit(unit)}
+                  style={{ backgroundColor: active ? TOKENS.jade : TOKENS.bg, color: active ? "#fff" : TOKENS.inkSoft }}
+                  className="rounded-full px-3 py-1.5 text-xs font-bold"
+                >
+                  {unit.replace("Lesson ", "L")}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -1384,7 +1489,7 @@ function ParentView({ progress, familyCode, onBack }) {
         <div style={{ backgroundColor: TOKENS.card }} className="rounded-3xl p-5 shadow-md">
           <h3 style={{ color: TOKENS.ink }} className="font-bold mb-3">About this data</h3>
           <p style={{ color: TOKENS.inkSoft }} className="text-sm leading-relaxed">
-            "Reviewed" counts characters answered per day; "Chi" is points earned. Progress is saved on this device only — a skipped day just won't show a bar. Words are currently drawn from Lessons 1–7 of the official MOE Primary 1 character list ({WORDS.length} words so far).
+            "Reviewed" counts characters answered per day; "Chi" is points earned. Progress is saved on this device only — a skipped day just won't show a bar. Words are currently drawn from Lessons 1–14 of the official MOE Primary 1 character list ({WORDS.length} words so far).
           </p>
         </div>
       </div>
