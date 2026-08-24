@@ -1561,7 +1561,10 @@ function ReviewCard({ word, total, index, onAnswer }) {
         <div className="text-4xl mb-2">👹</div>
         <button onClick={() => speak(word.hanzi)} className="inline-flex flex-col items-center gap-2">
           <span style={{ color: TOKENS.ink }} className="text-7xl md:text-8xl font-bold">{word.hanzi}</span>
-          <span style={{ color: TOKENS.inkSoft }} className="text-lg flex items-center gap-1"><Volume2 size={16} />{word.pinyin}</span>
+          <span style={{ color: TOKENS.inkSoft }} className="text-lg flex items-center gap-1">
+            <Volume2 size={16} />
+            {mode === "meaning" && word.pinyin}
+          </span>
         </button>
       </div>
       <p style={{ color: TOKENS.inkSoft }} className="text-center mb-4 font-semibold">
@@ -1957,7 +1960,10 @@ function BossBattle({ words, equipped, beltColor, onComplete }) {
         <div className="text-center mb-4">
           <button onClick={() => speak(word.hanzi)} className="inline-flex flex-col items-center gap-2">
             <span style={{ color: TOKENS.ink }} className="text-6xl md:text-7xl font-bold">{word.hanzi}</span>
-            <span style={{ color: TOKENS.inkSoft }} className="text-base flex items-center gap-1"><Volume2 size={14} />{word.pinyin}</span>
+            <span style={{ color: TOKENS.inkSoft }} className="text-base flex items-center gap-1">
+              <Volume2 size={14} />
+              {mode === "meaning" && word.pinyin}
+            </span>
           </button>
         </div>
         <p style={{ color: TOKENS.inkSoft }} className="text-center mb-3 text-sm font-semibold">{mode === "meaning" ? "What does it mean?" : "Which pinyin matches?"}</p>
