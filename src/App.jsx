@@ -504,78 +504,81 @@ function HeroAvatar({ loadout, beltColor, size = 140 }) {
   const cape = loadout.cape && loadout.cape !== "none" ? CAPE_COLORS[loadout.cape] : null;
   const weapon = loadout.weapon || "none";
   const sash = beltColor || TOKENS.ink;
-  const ink = "#241C15";
-  const pants = "#3D2B54";
+  const ink = "#2A211F";
+  const pants = "#3B2E4A";
+  const trim = "#F5C242";
+  const cream = "#F6EFE0";
 
   return (
-    <svg viewBox="0 0 240 310" width={size} height={size * 1.292}>
+    <svg viewBox="0 0 400 420" width={size} height={size * (420 / 400)} role="img" aria-label="Kung fu hero">
       {cape && (
         <>
-          <polygon points="88,108 32,228 64,228 98,124" fill={cape} opacity="0.9" />
-          <polygon points="152,108 208,228 176,228 142,124" fill={cape} opacity="0.9" />
+          <polygon points="150,182 66,362 108,362 156,224" fill={cape} opacity="0.9" />
+          <polygon points="250,182 334,362 292,362 244,224" fill={cape} opacity="0.9" />
         </>
       )}
 
-      {/* legs - wide stout stance */}
-      <polygon points="110,190 86,190 57,290 84,290" fill={pants} />
-      <polygon points="130,190 154,190 183,290 156,290" fill={pants} />
-      <rect x="56" y="284" width="28" height="9" rx="4" fill="#FFFDF7" stroke={ink} strokeWidth="1.5" />
-      <rect x="156" y="284" width="28" height="9" rx="4" fill="#FFFDF7" stroke={ink} strokeWidth="1.5" />
-      <ellipse cx="70" cy="296" rx="26" ry="11" fill={ink} />
-      <ellipse cx="170" cy="296" rx="26" ry="11" fill={ink} />
+      {/* legs - horse stance */}
+      <g strokeLinecap="round" strokeLinejoin="round" fill="none">
+        <path d="M176 262 L138 316 L124 362" stroke={pants} strokeWidth="36" />
+        <path d="M224 262 L262 316 L276 362" stroke={pants} strokeWidth="36" />
+        <path d="M126 356 L124 364" stroke={cream} strokeWidth="36" strokeLinecap="butt" />
+        <path d="M274 356 L276 364" stroke={cream} strokeWidth="36" strokeLinecap="butt" />
+      </g>
+      <ellipse cx="116" cy="374" rx="32" ry="14" fill={ink} />
+      <ellipse cx="284" cy="374" rx="32" ry="14" fill={ink} />
 
-      {/* left arm - guard */}
-      <path d="M86,108 Q54,124 60,164" stroke={outfit} strokeWidth="27" strokeLinecap="round" fill="none" />
-      <circle cx="60" cy="169" r="18" fill={ink} />
-      <circle cx="60" cy="163" r="16" fill={skin} stroke={ink} strokeWidth="2.5" />
+      {/* torso (gi) */}
+      <path d="M158 176 L242 176 Q252 176 253 186 L262 272 Q263 282 253 282 L147 282 Q137 282 138 272 L147 186 Q148 176 158 176 Z" fill={outfit} />
+      <path d="M200 176 L182 178 L200 214 L218 178 Z" fill={cream} />
+      <path d="M164 178 Q200 218 236 178" stroke={trim} strokeWidth="9" fill="none" strokeLinecap="round" />
 
-      {/* right arm - guard, weapon hand */}
-      <path d="M154,108 Q188,124 182,164" stroke={outfit} strokeWidth="27" strokeLinecap="round" fill="none" />
-      <circle cx="182" cy="169" r="18" fill={ink} />
-      <circle cx="182" cy="163" r="16" fill={skin} stroke={ink} strokeWidth="2.5" />
+      {/* belt - shows rank color, tail off to the side */}
+      <path d="M138 264 L262 264 L263 282 L137 282 Z" fill={sash} />
+      <rect x="216" y="280" width="16" height="32" rx="7" fill={sash} transform="rotate(10 224 296)" />
 
-      {/* torso */}
-      <path d="M84,102 Q120,90 156,102 L166,190 Q120,204 74,190 Z" fill={outfit} stroke={ink} strokeWidth="3" />
-      <polygon points="110,102 120,124 130,102" fill="#FFFDF7" />
-      <rect x="76" y="183" width="88" height="17" rx="8.5" fill={sash} stroke={ink} strokeWidth="2" />
-      <polygon points="104,200 101,216 109,214" fill={sash} stroke={ink} strokeWidth="1.5" />
-      <polygon points="136,200 139,216 131,214" fill={sash} stroke={ink} strokeWidth="1.5" />
+      {/* arms */}
+      <g strokeLinecap="round" strokeLinejoin="round" fill="none">
+        <path d="M158 196 L118 236 L134 264" stroke={outfit} strokeWidth="28" />
+        <path d="M130 256 L134 265" stroke={trim} strokeWidth="28" strokeLinecap="butt" />
+        <path d="M240 196 L282 208 L300 178" stroke={outfit} strokeWidth="28" />
+        <path d="M296 186 L301 177" stroke={trim} strokeWidth="28" strokeLinecap="butt" />
+      </g>
+      <circle cx="134" cy="272" r="16" fill={skin} />
+      <path d="M124 268 Q134 262 144 268" stroke="#D3906A" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <g transform="rotate(14 306 156)">
+        <rect x="292" y="128" width="28" height="42" rx="13" fill={skin} />
+        <circle cx="290" cy="162" r="9" fill={skin} />
+        <path d="M301 134 L301 152 M310 136 L310 152" stroke="#D3906A" strokeWidth="2.5" strokeLinecap="round" />
+      </g>
 
       {/* head */}
-      <circle cx="120" cy="62" r="46" fill={skin} stroke={ink} strokeWidth="3" />
-      <circle cx="80" cy="66" r="8" fill={skin} stroke={ink} strokeWidth="2" />
-      <circle cx="160" cy="66" r="8" fill={skin} stroke={ink} strokeWidth="2" />
-
-      {/* hair - bold swoop, fewer bigger shapes */}
-      <path
-        d="M78,56 Q72,14 120,10 Q168,14 162,56 Q156,42 144,50 Q134,30 120,46 Q110,28 98,46 Q90,42 78,56 Z"
-        fill={hair}
-        stroke={ink}
-        strokeWidth="2.5"
-      />
-      <path d="M138,24 Q150,-4 170,6 Q156,18 146,30 Z" fill={hair} stroke={ink} strokeWidth="2" />
+      <ellipse cx="146" cy="126" rx="9" ry="12" fill={skin} />
+      <ellipse cx="254" cy="126" rx="9" ry="12" fill={skin} />
+      <ellipse cx="200" cy="120" rx="54" ry="52" fill={skin} />
+      <path d="M148 124 C146 70 166 52 200 52 C234 52 254 70 252 124 L252 100 q-13 22 -26 0 q-13 22 -26 0 q-13 22 -26 0 q-13 22 -26 0 Z" fill={hair} />
+      <path d="M206 56 C216 30 234 20 248 14 C240 34 236 50 218 62 Z" fill={hair} />
+      <ellipse cx="164" cy="146" rx="11" ry="6" fill="#EE8A72" opacity="0.55" />
+      <ellipse cx="236" cy="146" rx="11" ry="6" fill="#EE8A72" opacity="0.55" />
+      <ellipse cx="182" cy="134" rx="10" ry="12" fill="#FFFFFF" />
+      <ellipse cx="218" cy="134" rx="10" ry="12" fill="#FFFFFF" />
+      <circle cx="184" cy="136" r="6.5" fill={ink} />
+      <circle cx="216" cy="136" r="6.5" fill={ink} />
+      <circle cx="186" cy="133" r="2.2" fill="#FFFFFF" />
+      <circle cx="218" cy="133" r="2.2" fill="#FFFFFF" />
+      <path d="M168 114 L190 122" stroke={hair} strokeWidth="6" strokeLinecap="round" />
+      <path d="M232 114 L210 122" stroke={hair} strokeWidth="6" strokeLinecap="round" />
+      <path d="M196 150 Q200 154 204 150" stroke="#D3906A" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M190 160 Q200 168 210 160" stroke={ink} strokeWidth="4" fill="none" strokeLinecap="round" />
 
       {/* headband */}
-      <rect x="74" y="54" width="92" height="16" rx="8" fill={headband} stroke={ink} strokeWidth="2" />
-      <polygon points="78,60 44,48 48,72" fill={headband} stroke={ink} strokeWidth="2" />
-
-      {/* face - fitted within the head circle this time */}
-      <line x1="90" y1="74" x2="112" y2="80" stroke={ink} strokeWidth="5" strokeLinecap="round" />
-      <line x1="150" y1="74" x2="128" y2="80" stroke={ink} strokeWidth="5" strokeLinecap="round" />
-      <ellipse cx="104" cy="88" rx="6.5" ry="6.5" fill="#fff" stroke={ink} strokeWidth="2" />
-      <circle cx="105" cy="90" r="4" fill={ink} />
-      <circle cx="106.5" cy="86" r="1.4" fill="#fff" />
-      <ellipse cx="136" cy="88" rx="6.5" ry="6.5" fill="#fff" stroke={ink} strokeWidth="2" />
-      <circle cx="137" cy="90" r="4" fill={ink} />
-      <circle cx="138.5" cy="86" r="1.4" fill="#fff" />
-      <circle cx="90" cy="94" r="6" fill="#FFB6A3" opacity="0.5" />
-      <circle cx="150" cy="94" r="6" fill="#FFB6A3" opacity="0.5" />
-      <circle cx="120" cy="97" r="1.6" fill={ink} opacity="0.3" />
-      <path d="M110,101 Q120,105 130,101" stroke={ink} strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M148 90 L98 74 L106 92 L98 112 Z" fill={headband} />
+      <rect x="146" y="82" width="110" height="20" rx="10" fill={headband} />
+      <path d="M152 92 L250 92" stroke={trim} strokeWidth="4" strokeLinecap="round" />
 
       {/* weapons - drawn last so they're never hidden behind the head */}
       {weapon === "sword" && (
-        <g transform="translate(182,163) rotate(-12)">
+        <g transform="translate(134,272) scale(1.35) rotate(-12)">
           <rect x="-6" y="-18" width="12" height="16" rx="3" fill="#6B4226" stroke={ink} strokeWidth="2" />
           <rect x="-14" y="-21" width="28" height="5" rx="2" fill="#D4AF37" stroke={ink} strokeWidth="1.5" />
           <polygon points="-5,-21 -5,-72 0,-84 5,-72 5,-21" fill="#E8ECEE" stroke={ink} strokeWidth="2" />
@@ -583,7 +586,7 @@ function HeroAvatar({ loadout, beltColor, size = 140 }) {
         </g>
       )}
       {weapon === "staff" && (
-        <g transform="translate(182,163) rotate(-12)">
+        <g transform="translate(134,272) scale(1.35) rotate(-12)">
           <rect x="-5" y="-95" width="10" height="92" rx="5" fill="#8B5A2B" stroke={ink} strokeWidth="2" />
           <rect x="-6" y="-84" width="12" height="6" rx="2" fill="#5C3A1A" />
           <rect x="-6" y="-16" width="12" height="6" rx="2" fill="#5C3A1A" />
@@ -592,7 +595,7 @@ function HeroAvatar({ loadout, beltColor, size = 140 }) {
         </g>
       )}
       {weapon === "nunchaku" && (
-        <g transform="translate(182,163) rotate(15)">
+        <g transform="translate(134,272) scale(1.35) rotate(15)">
           <rect x="0" y="-6" width="26" height="12" rx="6" fill="#5C3A1A" stroke={ink} strokeWidth="2" />
           <line x1="8" y1="-6" x2="8" y2="6" stroke={ink} strokeWidth="1.5" opacity="0.5" />
           <line x1="18" y1="-6" x2="18" y2="6" stroke={ink} strokeWidth="1.5" opacity="0.5" />
@@ -606,7 +609,7 @@ function HeroAvatar({ loadout, beltColor, size = 140 }) {
         </g>
       )}
       {weapon === "fan" && (
-        <g transform="translate(182,163) rotate(5)">
+        <g transform="translate(134,272) scale(1.35) rotate(5)">
           <path d="M0,0 L34,-10 A36,36 0 0 1 24,26 Z" fill={TOKENS.gold} stroke={ink} strokeWidth="2" />
           <path d="M0,0 L34,-10 A36,36 0 0 1 29,8 Z" fill={TOKENS.coral} opacity="0.85" />
           <path d="M0,0 L14,20 A36,36 0 0 1 24,26 Z" fill={TOKENS.coral} opacity="0.85" />
