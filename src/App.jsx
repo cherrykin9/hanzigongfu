@@ -1041,11 +1041,11 @@ function HomeScreen({ progress, streak, onStart, onStartBoss, onCustomize, onPar
   const learnedIds = Object.keys(progress.words || {});
   const masteredCount = learnedIds.filter((id) => progress.words[id].level >= 4).length;
   const belt = getBelt(masteredCount);
-  const canBoss = learnedIds.length >= 3;
   const today = todayStr();
   const lastDay = isLastDayOfMonth(today);
   const mKey = monthKey(today);
   const bossDoneThisMonth = !!(progress.bossHistory && progress.bossHistory[mKey]);
+  const canBoss = learnedIds.length >= 3 && lastDay && !bossDoneThisMonth;
   const bossWinsCount = Object.keys(progress.bossHistory || {}).length;
   const greetings = ["妖怪来了，准备战斗！", "今天也要加油修炼！", "小侠，欢迎回来！"];
   const greeting = greetings[new Date().getDate() % greetings.length];
