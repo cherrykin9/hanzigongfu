@@ -638,7 +638,6 @@ export default function App() {
   const [newIdx, setNewIdx] = useState(0);
   const [starsEarned, setStarsEarned] = useState(0);
   const [selectedLantern, setSelectedLantern] = useState(null);
-  const [confirmReset, setConfirmReset] = useState(false);
   const [bossWords, setBossWords] = useState([]);
   const [familyCode, setFamilyCode] = useState(null);
   const [needsFamilyCode, setNeedsFamilyCode] = useState(false);
@@ -736,14 +735,12 @@ export default function App() {
   }
 
   async function handleReset() {
-    if (!confirmReset) { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 3000); return; }
     try {
       if (HAS_CLAUDE_STORAGE) await window.storage.delete("zi-bao-progress");
       else if (familyCode) await blobsSet(familyCode, defaultProgress());
     } catch (e) {}
     localSet("zi-bao-progress-local", defaultProgress());
     setProgress(defaultProgress());
-    setConfirmReset(false);
   }
 
   function displayStreak() {
@@ -888,8 +885,6 @@ export default function App() {
         onParent={() => setScreen("parentGate")}
         selectedLantern={selectedLantern}
         setSelectedLantern={setSelectedLantern}
-        onReset={handleReset}
-        confirmReset={confirmReset}
       />
     );
   }
@@ -910,6 +905,7 @@ export default function App() {
         onBack={() => setScreen("home")}
         onChangeFamilyCode={handleFamilyCodeSubmit}
         onUpdateEnabledUnits={handleUpdateEnabledUnits}
+        onReset={handleReset}
       />
     );
   }
@@ -1037,7 +1033,7 @@ function FamilyCodeScreen({ onSubmit }) {
   );
 }
 
-function HomeScreen({ progress, streak, onStart, onStartBoss, onCustomize, onParent, selectedLantern, setSelectedLantern, onReset, confirmReset }) {
+function HomeScreen({ progress, streak, onStart, onStartBoss, onCustomize, onParent, selectedLantern, setSelectedLantern }) {
   const learnedIds = Object.keys(progress.words || {});
   const masteredCount = learnedIds.filter((id) => progress.words[id].level >= 4).length;
   const belt = getBelt(masteredCount);
@@ -1143,12 +1139,9 @@ function HomeScreen({ progress, streak, onStart, onStartBoss, onCustomize, onPar
           </div>
         </div>
 
-        <div className="text-center mt-8 flex items-center justify-center gap-4">
+        <div className="text-center mt-8">
           <button onClick={onParent} style={{ color: TOKENS.inkSoft }} className="text-xs underline inline-flex items-center gap-1">
             <Users size={12} /> For Parents
-          </button>
-          <button onClick={onReset} style={{ color: TOKENS.inkSoft }} className="text-xs underline">
-            {confirmReset ? "Tap again to confirm reset" : "Reset progress"}
           </button>
         </div>
       </div>
@@ -1313,7 +1306,7 @@ function ParentGate({ onBack, onSuccess }) {
   );
 }
 
-function ParentView({ progress, familyCode, onBack, onChangeFamilyCode, onUpdateEnabledUnits }) {
+function ParentView({ progress, familyCode, onBack, onChangeFamilyCode, onUpdateEnabledUnits, onReset }) {
   const masteredCount = masteredCountOf(progress);
   const learnedCount = Object.keys(progress.words || {}).length;
   const history = progress.history || [];
@@ -1325,6 +1318,7 @@ function ParentView({ progress, familyCode, onBack, onChangeFamilyCode, onUpdate
   const bossWinsCount = Object.keys(progress.bossHistory || {}).length;
   const [editingCode, setEditingCode] = useState(false);
   const [codeInput, setCodeInput] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const effectiveEnabled = progress.enabledUnits && progress.enabledUnits.length > 0 ? progress.enabledUnits : ALL_UNITS;
 
   function toggleUnit(unit) {
@@ -1486,13 +1480,47 @@ function ParentView({ progress, familyCode, onBack, onChangeFamilyCode, onUpdate
           )}
         </div>
 
-        <div style={{ backgroundColor: TOKENS.card }} className="rounded-3xl p-5 shadow-md">
+        <div style={{ backgroundColor: TOKENS.card }} className="rounded-3xl p-5 shadow-md mb-6">
           <h3 style={{ color: TOKENS.ink }} className="font-bold mb-3">About this data</h3>
           <p style={{ color: TOKENS.inkSoft }} className="text-sm leading-relaxed">
             "Reviewed" counts characters answered per day; "Chi" is points earned. Progress is saved on this device only — a skipped day just won't show a bar. Words are currently drawn from Lessons 1–14 of the official MOE Primary 1 character list ({WORDS.length} words so far).
           </p>
         </div>
+
+        <div style={{ backgroundColor: TOKENS.card, border: `2px solid ${TOKENS.coral}` }} className="rounded-3xl p-5 shadow-md">
+          <h3 style={{ color: TOKENS.coralDark }} className="font-bold mb-2">Danger zone</h3>
+          <p style={{ color: TOKENS.inkSoft }} className="text-sm leading-relaxed mb-4">
+            Permanently erase all progress for this Family Code — every mastered character, streak, Chi, and boss medal. This cannot be undone.
+          </p>
+          <button onClick={() => setShowResetConfirm(true)} style={{ backgroundColor: TOKENS.blush, color: TOKENS.coralDark }} className="font-bold rounded-2xl px-5 py-2.5 text-sm">
+            Reset all progress
+          </button>
+        </div>
       </div>
+
+      {showResetConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(36,28,21,0.6)" }} onClick={() => setShowResetConfirm(false)}>
+          <div style={{ backgroundColor: TOKENS.card, borderTop: `6px solid ${TOKENS.coral}` }} className="rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <p className="text-4xl mb-3">⚠️</p>
+            <h3 style={{ color: TOKENS.ink }} className="text-xl font-extrabold mb-2">Reset everything?</h3>
+            <p style={{ color: TOKENS.inkSoft }} className="text-sm leading-relaxed mb-6">
+              This permanently erases all progress for this Family Code — mastered characters, streak, Chi, and boss medals. There is no undo.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowResetConfirm(false)} style={{ backgroundColor: "#F3EFE1", color: TOKENS.ink }} className="flex-1 font-bold rounded-2xl py-3">
+                Cancel
+              </button>
+              <button
+                onClick={() => { onReset(); setShowResetConfirm(false); }}
+                style={{ backgroundColor: TOKENS.coral }}
+                className="flex-1 text-white font-bold rounded-2xl py-3"
+              >
+                Yes, reset everything
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
