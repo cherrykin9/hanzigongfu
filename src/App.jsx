@@ -357,8 +357,7 @@ const INTERVALS = [0, 1, 2, 4, 7, 14];
 
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function addDays(dateStr, n) { const d = new Date(dateStr + "T00:00:00"); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
-function isLastDayOfMonth(dateStr) { const d = new Date(dateStr + "T00:00:00"); const next = new Date(d); next.setDate(d.getDate() + 1); return next.getMonth() !== d.getMonth(); }
-function monthKey(dateStr) { return dateStr.slice(0, 7); }
+function isFriday(dateStr) { return new Date(dateStr + "T00:00:00").getDay() === 5; }
 function logHistory(existing, date, entry) {
   const history = [...(existing || [])];
   const idx = history.findIndex((h) => h.date === date);
@@ -841,8 +840,7 @@ export default function App() {
 
   function handleBossComplete(chi) {
     const today = todayStr();
-    const mKey = monthKey(today);
-    const bossHistory = { ...(progress.bossHistory || {}), [mKey]: true };
+    const bossHistory = { ...(progress.bossHistory || {}), [today]: true }; // keyed by the Friday's date
     const totalStars = (progress.totalStars || 0) + chi;
     const history = logHistory(progress.history, today, { chi });
     saveProgress({ ...progress, bossHistory, totalStars, history });
@@ -1038,10 +1036,9 @@ function HomeScreen({ progress, streak, onStart, onStartBoss, onCustomize, onPar
   const masteredCount = learnedIds.filter((id) => progress.words[id].level >= 4).length;
   const belt = getBelt(masteredCount);
   const today = todayStr();
-  const lastDay = isLastDayOfMonth(today);
-  const mKey = monthKey(today);
-  const bossDoneThisMonth = !!(progress.bossHistory && progress.bossHistory[mKey]);
-  const canBoss = learnedIds.length >= 3 && lastDay && !bossDoneThisMonth;
+  const friday = isFriday(today);
+  const bossDoneToday = !!(progress.bossHistory && progress.bossHistory[today]);
+  const canBoss = learnedIds.length >= 3 && friday && !bossDoneToday;
   const bossWinsCount = Object.keys(progress.bossHistory || {}).length;
   const greetings = ["妖怪来了，准备战斗！", "今天也要加油修炼！", "小侠，欢迎回来！"];
   const greeting = greetings[new Date().getDate() % greetings.length];
@@ -1088,7 +1085,7 @@ function HomeScreen({ progress, streak, onStart, onStartBoss, onCustomize, onPar
           <div className="flex-1">
             <p style={{ color: "#fff" }} className="text-lg font-extrabold mb-1">Boss Battle</p>
             <p style={{ color: TOKENS.spiritLight }} className="text-sm">
-              {lastDay ? (bossDoneThisMonth ? "Boss defeated this month! 🎉" : "The boss awakens today!") : "Real boss awakens on the last day of the month"}
+              {friday ? (bossDoneToday ? "Boss defeated today! 🎉" : "The boss awakens today!") : "The boss awakens every Friday"}
             </p>
           </div>
           <button onClick={onStartBoss} disabled={!canBoss} style={{ backgroundColor: canBoss ? "#fff" : "rgba(255,255,255,0.3)", color: canBoss ? TOKENS.spirit : "#fff" }} className="rounded-full px-5 py-3 font-bold text-sm shadow-sm flex-shrink-0">
